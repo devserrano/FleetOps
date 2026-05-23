@@ -23,7 +23,7 @@ app.get('/api/vehiculos', async (req, res) => {
     try {
 
         const resultado = await pool.query(
-            'SELECT * FROM vehiculos'
+            'SELECT * FROM vehiculos ORDER BY id ASC'
         );
 
         res.json(resultado.rows);
@@ -44,15 +44,15 @@ app.post('/api/vehiculos', async (req, res) => {
 
     try {
 
-        const { unidad, tipo, estado } = req.body;
+        const { unidad, tipo, estado, operador } = req.body;
 
         const resultado = await pool.query(
             `
-            INSERT INTO vehiculos (unidad, tipo, estado)
-            VALUES ($1, $2, $3)
+            INSERT INTO vehiculos (unidad, tipo, estado, operador)
+            VALUES ($1, $2, $3, $4)
             RETURNING *
             `,
-            [unidad, tipo, estado]
+            [unidad, tipo, estado, operador]
         );
 
         res.json(resultado.rows[0]);
