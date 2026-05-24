@@ -13,7 +13,7 @@ body {
 .layout {
     display: flex;
     min-height: 100vh;
-}v
+}
 
 .oculto {
     display: none !important;

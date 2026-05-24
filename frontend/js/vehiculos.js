@@ -99,29 +99,37 @@ async function eliminarVehiculo(id) {
 
 }
 
-
 async function editarVehiculo(id) {
 
     const respuesta = await fetch(
+
         'http://localhost:3000/api/vehiculos'
+
     );
 
     const vehiculos = await respuesta.json();
 
     const vehiculo = vehiculos.find(
+
         v => v.id === id
+
     );
+
+    await cargarOperadoresEditar();
 
     const modal = document.getElementById('modalEstado');
 
     modal.setAttribute('data-id', id);
 
-    document.getElementById('inputOperadorEditar').value = vehiculo.operador;
+    document.getElementById('selectOperadorEditar').value = vehiculo.operador_id;
+
     document.getElementById('selectEstado').value = vehiculo.estado;
 
     modal.classList.remove('oculto');
 
 }
+
+
 
 function agregarVehiculo() {
 
@@ -200,6 +208,9 @@ btnCancelarAgregar.addEventListener('click', () => {
 
 });
 
+
+
+
 btnGuardarAgregar.addEventListener('click', async () => {
 
     const unidad = document
@@ -269,27 +280,22 @@ btnGuardarEstado.addEventListener('click', async () => {
     const modal = document.getElementById('modalEstado');
 
     const id = modal.getAttribute('data-id');
-    const nuevoOperador = document
-    .getElementById('inputOperadorEditar')
-    .value
-    .trim();
 
-if (!nuevoOperador) {
-    alert('El operador es obligatorio');
-    return;
-}
+    const operador_id = document
+        .getElementById('selectOperadorEditar')
+        .value;
 
-    const nuevoEstado = document.getElementById(
-        'selectEstado'
-    ).value;
-
-    console.log('ID al guardar:', id);
-    console.log('Nuevo estado:', nuevoEstado);
+    const nuevoEstado = document
+        .getElementById('selectEstado')
+        .value;
 
     if (!id) {
-
         alert('No hay vehículo seleccionado');
+        return;
+    }
 
+    if (!operador_id) {
+        alert('El operador es obligatorio');
         return;
     }
 
@@ -300,8 +306,8 @@ if (!nuevoOperador) {
             headers: {
                 'Content-Type': 'application/json'
             },
-             body: JSON.stringify({
-                operador: nuevoOperador,
+            body: JSON.stringify({
+                operador_id,
                 estado: nuevoEstado
             })
         });
@@ -314,11 +320,39 @@ if (!nuevoOperador) {
     } catch (error) {
 
         console.error(
-            'Error al actualizar estado:',
+            'Error al actualizar vehículo:',
             error
         );
 
     }
 
 });
+
+
+
+async function cargarOperadoresEditar() {
+
+    const respuesta = await fetch(
+        'http://localhost:3000/api/operadores'
+    );
+
+    const operadores = await respuesta.json();
+
+    const select = document.getElementById(
+        'selectOperadorEditar'
+    );
+
+    select.innerHTML = '';
+
+    operadores.forEach((operador) => {
+
+        select.innerHTML += `
+            <option value="${operador.id}">
+                ${operador.nombre}
+            </option>
+        `;
+
+    });
+
+}
 

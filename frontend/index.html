@@ -19,6 +19,7 @@
                 <link rel="stylesheet" href="css/mantenimiento.css">
                 <link rel="stylesheet" href="css/modal.css">
                 <link rel="stylesheet" href="css/responsive.css">
+                <link rel="stylesheet" href="css/operadores.css">
 
          
          
@@ -55,6 +56,10 @@
                 <i class="fa-solid fa-screwdriver-wrench"></i>
                 Mantenimiento
             </button>
+            <button data-seccion="operadores" onclick="mostrarSeccion('operadores')">
+                <i class="fa-solid fa-users"></i>
+                 Operadores
+                </button>
 
     </aside>
 
@@ -145,6 +150,24 @@
             </table>
 
         </section>
+
+                        <section id="operadores" class="seccion oculto">
+
+                <div class="encabezado">
+
+                    <div>
+                        <h1>Operadores</h1>
+                        <p>Personal asignado a las unidades</p>
+                    </div>
+
+                </div>
+
+                <div id="contenedorOperadores" class="grid-operadores">
+                </div>
+
+            </section>
+
+
             <section id="inspecciones" class="seccion oculto">
 
                 <div class="encabezado">
@@ -257,29 +280,43 @@
         <h2>Editar vehículo</h2>
 
         <label>Operador</label>
-        <input 
-            id="inputOperadorEditar" 
-            type="text" 
-            placeholder="Nombre del operador"
-        >
+
+        <select id="selectOperadorEditar">
+        </select>
 
         <label>Estado</label>
+
         <select id="selectEstado">
-            <option value="Activo">Activo</option>
-            <option value="En mantenimiento">En mantenimiento</option>
-            <option value="Descompuesto">Descompuesto</option>
+
+            <option value="Activo">
+                Activo
+            </option>
+
+            <option value="En mantenimiento">
+                En mantenimiento
+            </option>
+
+            <option value="Descompuesto">
+                Descompuesto
+            </option>
+
         </select>
 
         <div class="modal-botones">
-            <button id="btnGuardarEstado">Guardar</button>
-            <button id="btnCancelarEstado">Cancelar</button>
+
+            <button id="btnGuardarEstado">
+                Guardar
+            </button>
+
+            <button id="btnCancelarEstado">
+                Cancelar
+            </button>
+
         </div>
 
     </div>
 
 </div>
-
-
 
 
 
@@ -297,11 +334,9 @@
         >
 
         <label>Operador</label>
-        <input 
-            id="inputOperador" 
-            type="text" 
-            placeholder="Nombre del operador"
-        >
+        <select id="selectOperadorEditar" >
+
+        </select>
 
         <label>Estado</label>
 
@@ -427,10 +462,62 @@
 
 </div>
 
+<div id="modalOperador" class="modal oculto" data-id="">
+
+    <div class="modal-contenido modal-operador">
+
+        <h2>Agregar operador</h2>
+
+        <label>Nombre</label>
+        <input 
+            id="inputNombreOperador"
+            type="text"
+            placeholder="Ejemplo: Alejandro Ruiz"
+        >
+
+        <label>Teléfono</label>
+        <input 
+            id="inputTelefonoOperador"
+            type="text"
+            placeholder="Ejemplo: 5512345678"
+        >
+
+        <label>Foto URL</label>
+        <input 
+            id="inputFotoOperador"
+            type="text"
+            placeholder="https://i.pravatar.cc/300"
+        >
+
+        <label>Estado</label>
+        <select id="selectEstadoOperador">
+            <option value="Activo">Activo</option>
+            <option value="Reserva">Reserva</option>
+            <option value="Inactivo">Inactivo</option>
+        </select>
+
+        <div class="modal-preview-operador">
+            <img 
+                id="previewFotoOperador"
+                src="https://i.pravatar.cc/300"
+                alt="Preview operador"
+            >
+        </div>
+
+        <div class="modal-botones">
+            <button id="btnGuardarOperador">Guardar</button>
+            <button id="btnCancelarOperador">Cancelar</button>
+        </div>
+
+    </div>
+
+</div>
+
 <script src="app.js"></script>
 <script src="js/vehiculos.js"></script>
 <script src="js/inspecciones.js"></script>
 <script src="js/mantenimiento.js"></script>
+<script src="js/operadores.js"></script>
 
 </body>
 

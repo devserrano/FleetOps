@@ -160,15 +160,42 @@ async function obtenerMantenimientos() {
                     <td>${mantenimiento.observaciones || '-'}</td>
 
                         <td>
-                            <button 
-                                class="btn-editar"
-                                onclick="editarMantenimiento(${mantenimiento.id})"
-                                title="Editar mantenimiento">
 
-                                <i class="fa-solid fa-pen"></i>
+    <button 
+
+        class="btn-editar"
+
+        onclick="editarMantenimiento(${mantenimiento.id})"
+
+        title="Editar mantenimiento">
+
+        <i class="fa-solid fa-pen"></i>
+
+    </button>
+
+    ${mantenimiento.estado !== 'Finalizado'
+
+        ? `
+
+                            <button 
+
+                                class="btn-finalizar"
+
+                                onclick="finalizarMantenimiento(${mantenimiento.id})"
+
+                                title="Marcar como finalizado">
+
+                                <i class="fa-solid fa-check"></i>
 
                             </button>
-                        </td>
+
+                            `
+
+                            : ''
+
+                        }
+
+                    </td>
 
                 </tr>
             `;
@@ -256,6 +283,30 @@ function actualizarCardsMantenimiento(mantenimientos) {
     document.getElementById('pendientesMantenimiento').textContent = pendientes;
     document.getElementById('finalizadosMantenimiento').textContent = finalizados;
     document.getElementById('gastoTotal').textContent = `$${gastoTotal.toFixed(2)}`;
+
+}
+async function finalizarMantenimiento(id) {
+
+    try {
+
+        await fetch(
+            `http://localhost:3000/api/mantenimientos/${id}/finalizar`,
+            {
+                method: 'PUT'
+            }
+        );
+
+        obtenerMantenimientos();
+        obtenerVehiculos();
+
+    } catch (error) {
+
+        console.error(
+            'Error al finalizar mantenimiento:',
+            error
+        );
+
+    }
 
 }
 

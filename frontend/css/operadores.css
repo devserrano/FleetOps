@@ -1,0 +1,215 @@
+.grid-operadores {
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+
+    gap: 24px;
+
+    margin-top: 24px;
+
+}
+
+.card-operador {
+
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    transition: 0.2s ease;
+
+}
+
+.card-operador:hover {
+
+    transform: translateY(-4px);
+
+}
+
+.foto-contenedor {
+
+    width: 110px;
+
+    height: 110px;
+
+    margin-bottom: 16px;
+
+}
+
+.foto-operador {
+
+    width: 100%;
+
+    height: 100%;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 4px solid #f3f4f6;
+
+}
+
+.info-operador {
+
+    text-align: center;
+
+}
+
+.info-operador h3 {
+
+    margin-bottom: 8px;
+
+    font-size: 20px;
+
+    color: #111827;
+
+}
+
+.telefono {
+
+    color: #6b7280;
+
+    margin-bottom: 8px;
+
+}
+
+.unidad {
+
+    font-weight: 600;
+
+    margin-bottom: 12px;
+
+}
+
+.badge-estado {
+
+    display: inline-block;
+
+    padding: 6px 12px;
+
+    border-radius: 999px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+.badge-estado.activo {
+
+    background: #dcfce7;
+
+    color: #166534;
+
+}
+
+.badge-estado.en-mantenimiento {
+
+    background: #fef3c7;
+
+    color: #92400e;
+
+}
+
+.badge-estado.descompuesto {
+
+    background: #fee2e2;
+
+    color: #991b1b;
+
+}
+
+.acciones-operador {
+
+    margin-top: 18px;
+
+    display: flex;
+
+    gap: 12px;
+
+}
+
+.acciones-operador button {
+
+    border: none;
+
+    padding: 10px 14px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+}
+
+.btn-editar {
+
+    background: #dbeafe;
+
+    color: #1d4ed8;
+
+}
+
+.btn-eliminar {
+
+    background: #fee2e2;
+
+    color: #dc2626;
+
+}
+
+.acciones-operador button:hover {
+
+    transform: scale(1.05);
+
+}
+
+
+.card-agregar-operador {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 18px;
+    min-height: 190px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.card-agregar-operador:hover {
+    background: #eff6ff;
+    border-color: #2563eb;
+    transform: translateY(-4px);
+}
+
+.icono-agregar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+
+    background: #dbeafe;
+    color: #2563eb;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 28px;
+    margin-bottom: 14px;
+}

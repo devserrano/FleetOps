@@ -21,9 +21,21 @@ app.get('/api/vehiculos', async (req, res) => {
 
     try {
 
-        const resultado = await pool.query(
-            'SELECT * FROM vehiculos ORDER BY id ASC'
-        );
+            const resultado = await pool.query(
+                `
+                SELECT
+                    vehiculos.id,
+                    vehiculos.unidad,
+                    vehiculos.tipo,
+                    vehiculos.estado,
+                    vehiculos.operador_id,
+                    operadores.nombre AS operador
+                FROM vehiculos
+                LEFT JOIN operadores
+                ON vehiculos.operador_id = operadores.id
+                ORDER BY vehiculos.id ASC
+                `
+            );
 
         res.json(resultado.rows);
 
@@ -75,26 +87,24 @@ app.put('/api/vehiculos/:id', async (req, res) => {
 
         const { id } = req.params;
 
-        const { operador, estado } = req.body;
+        const { operador_id, estado } = req.body;
 
         const resultado = await pool.query(
-
             `
-
             UPDATE vehiculos
-
-            SET operador = $1,
-            estado = $2
-
+            SET operador_id = $1,
+                estado = $2
             WHERE id = $3
-
             RETURNING *
-
             `,
-
-            [operador, estado, id]
-
+            [operador_id, estado, id]
         );
+
+        if (resultado.rows.length === 0) {
+            return res.status(404).json({
+                mensaje: 'Vehículo no encontrado'
+            });
+        }
 
         res.json(resultado.rows[0]);
 
@@ -103,9 +113,7 @@ app.put('/api/vehiculos/:id', async (req, res) => {
         console.error(error);
 
         res.status(500).json({
-
-            mensaje: 'Error al actualizar estado'
-
+            mensaje: 'Error al actualizar vehículo'
         });
 
     }
@@ -189,6 +197,11 @@ app.post('/api/inspecciones', async (req, res) => {
                 observaciones
             ]
         );
+
+            await actualizarEstadoVehiculoPorInspeccion(
+                 vehiculo_id,
+                 resultado
+             );
 
         res.json(resultadoQuery.rows[0]);
 
@@ -301,6 +314,10 @@ app.put('/api/inspecciones/:id', async (req, res) => {
                 id
             ]
         );
+        await actualizarEstadoVehiculoPorInspeccion(
+          vehiculo_id,
+          resultado
+        );
 
         res.json(resultadoQuery.rows[0]);
 
@@ -316,7 +333,58 @@ app.put('/api/inspecciones/:id', async (req, res) => {
 
 });
 
+
+
+async function actualizarEstadoVehiculoPorMantenimiento(vehiculo_id, estado) {
+
+    const vehiculoActual = await pool.query(
+        `
+        SELECT estado
+        FROM vehiculos
+        WHERE id = $1
+        `,
+        [vehiculo_id]
+    );
+
+    if (vehiculoActual.rows.length === 0) {
+        return;
+    }
+
+    const estadoActual = vehiculoActual.rows[0].estado;
+
+    if (estadoActual === 'Descompuesto') {
+        return;
+    }
+
+    if (estado === 'Pendiente' || estado === 'En proceso') {
+
+        await pool.query(
+            `
+            UPDATE vehiculos
+            SET estado = 'En mantenimiento'
+            WHERE id = $1
+            `,
+            [vehiculo_id]
+        );
+
+    } else if (estado === 'Finalizado') {
+
+        await pool.query(
+            `
+            UPDATE vehiculos
+            SET estado = 'Activo'
+            WHERE id = $1
+            `,
+            [vehiculo_id]
+        );
+
+    }
+
+}
+
+
 app.post('/api/mantenimientos', async (req, res) => {
+    
 
     try {
 
@@ -349,7 +417,10 @@ app.post('/api/mantenimientos', async (req, res) => {
                 observaciones
             ]
         );
-
+         await actualizarEstadoVehiculoPorMantenimiento(
+            vehiculo_id,
+            estado
+        );
         res.json(resultado.rows[0]);
 
     } catch (error) {
@@ -363,6 +434,10 @@ app.post('/api/mantenimientos', async (req, res) => {
     }
 
 });
+
+
+
+
 app.get('/api/mantenimientos', async (req, res) => {
 
     try {
@@ -401,6 +476,8 @@ app.get('/api/mantenimientos', async (req, res) => {
 
 app.put('/api/mantenimientos/:id', async (req, res) => {
 
+    
+
     try {
 
         const { id } = req.params;
@@ -434,6 +511,11 @@ app.put('/api/mantenimientos/:id', async (req, res) => {
             ]
         );
 
+        await actualizarEstadoVehiculoPorMantenimiento(
+        vehiculo_id,
+            estado
+        );
+
         res.json(resultado.rows[0]);
 
     } catch (error) {
@@ -449,6 +531,237 @@ app.put('/api/mantenimientos/:id', async (req, res) => {
 });
 
 
+
+async function actualizarEstadoVehiculoPorInspeccion(vehiculo_id, resultado) {
+
+    const vehiculoActual = await pool.query(
+        `
+        SELECT estado
+        FROM vehiculos
+        WHERE id = $1
+        `,
+        [vehiculo_id]
+    );
+
+    if (vehiculoActual.rows.length === 0) {
+        return;
+    }
+
+    const estadoActual = vehiculoActual.rows[0].estado;
+
+    if (estadoActual === 'Descompuesto') {
+        return;
+    }
+
+    if (resultado === 'Requiere mantenimiento') {
+
+        await pool.query(
+            `
+            UPDATE vehiculos
+            SET estado = 'En mantenimiento'
+            WHERE id = $1
+            `,
+            [vehiculo_id]
+        );
+
+    }
+
+    if (resultado === 'Aprobado') {
+
+        await pool.query(
+            `
+            UPDATE vehiculos
+            SET estado = 'Activo'
+            WHERE id = $1
+            `,
+            [vehiculo_id]
+        );
+
+    }
+
+}
+
+app.get('/api/operadores', async (req, res) => {
+
+    try {
+
+        const resultado = await pool.query(
+            `
+            SELECT
+                operadores.id,
+                operadores.nombre,
+                operadores.telefono,
+                operadores.estado,
+                operadores.foto,
+                vehiculos.unidad,
+                vehiculos.estado AS estado_vehiculo
+            FROM operadores
+            LEFT JOIN vehiculos
+            ON vehiculos.operador_id = operadores.id
+            ORDER BY operadores.id ASC
+            `
+        );
+
+        res.json(resultado.rows);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: 'Error al obtener operadores'
+        });
+
+    }
+
+});
+
+
+app.put('/api/mantenimientos/:id/finalizar', async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const mantenimiento = await pool.query(
+            `
+            SELECT *
+            FROM mantenimientos
+            WHERE id = $1
+            `,
+            [id]
+        );
+
+        if (mantenimiento.rows.length === 0) {
+            return res.status(404).json({
+                mensaje: 'Mantenimiento no encontrado'
+            });
+        }
+
+        const vehiculo_id = mantenimiento.rows[0].vehiculo_id;
+
+        const resultado = await pool.query(
+            `
+            UPDATE mantenimientos
+            SET estado = 'Finalizado'
+            WHERE id = $1
+            RETURNING *
+            `,
+            [id]
+        );
+
+        await actualizarEstadoVehiculoPorMantenimiento(
+            vehiculo_id,
+            'Finalizado'
+        );
+
+        res.json(resultado.rows[0]);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: 'Error al finalizar mantenimiento'
+        });
+
+    }
+
+});
+
+app.post('/api/operadores', async (req, res) => {
+
+    try {
+
+        const {
+            nombre,
+            telefono,
+            foto,
+            estado
+        } = req.body;
+
+        const resultado = await pool.query(
+            `
+            INSERT INTO operadores
+            (
+                nombre,
+                telefono,
+                foto,
+                estado
+            )
+            VALUES ($1, $2, $3, $4)
+            RETURNING *
+            `,
+            [
+                nombre,
+                telefono,
+                foto,
+                estado
+            ]
+        );
+
+        res.json(resultado.rows[0]);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: 'Error al agregar operador'
+        });
+
+    }
+
+});
+
+app.put('/api/operadores/:id', async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const {
+            nombre,
+            telefono,
+            foto,
+            estado
+        } = req.body;
+
+        const resultado = await pool.query(
+            `
+            UPDATE operadores
+            SET nombre = $1,
+                telefono = $2,
+                foto = $3,
+                estado = $4
+            WHERE id = $5
+            RETURNING *
+            `,
+            [
+                nombre,
+                telefono,
+                foto,
+                estado,
+                id
+            ]
+        );
+
+        res.json(resultado.rows[0]);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: 'Error al actualizar operador'
+        });
+
+    }
+
+});
+
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);
 });
+
+
