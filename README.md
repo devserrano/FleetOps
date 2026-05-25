@@ -75,30 +75,45 @@ El sistema fue diseñado para simular un entorno real de control operativo de fl
 Diego Serrano  
 Ingeniería en Computación - UNAM
 
----
-
 # Arquitectura del proyecto
 
-
-backend/
-├── src/
-│   └── config/
-│       └── db.js
-├── server.js
-
-frontend/
-├── css/
-├── js/
-│   ├── api.js
-│   ├── app.js
-│   ├── dashboard.js
-│   ├── inspecciones.js
-│   ├── mantenimiento.js
-│   ├── modales.js
-│   ├── operadores.js
-│   └── vehiculos.js
+```txt
+biciops/
 │
-└── index.html
-└── .gitignore
-└── docker-compose.yml
+├── backend/
+│   ├── src/
+│   │   └── config/
+│   │       └── db.js
+│   │
+│   ├── package.json
+│   ├── package-lock.json
+│   └── server.js
+│
+├── frontend/
+│   ├── css/
+│   │   ├── dashboard.css
+│   │   ├── vehiculos.css
+│   │   ├── inspecciones.css
+│   │   ├── mantenimiento.css
+│   │   ├── operadores.css
+│   │   ├── sidebar.css
+│   │   ├── topbar.css
+│   │   ├── modal.css
+│   │   └── responsive.css
+│   │
+│   ├── js/
+│   │   ├── api.js
+│   │   ├── app.js
+│   │   ├── dashboard.js
+│   │   ├── vehiculos.js
+│   │   ├── inspecciones.js
+│   │   ├── mantenimiento.js
+│   │   ├── operadores.js
+│   │   └── modales.js
+│   │
+│   └── index.html
+│
+├── docker-compose.yml
+├── .gitignore
 └── README.md
+```
