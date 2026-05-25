@@ -70,6 +70,11 @@ El sistema fue diseñado para simular un entorno real de control operativo de fl
 - Docker
 - Docker Compose
 
+## Autor
+
+Diego Serrano  
+Ingeniería en Computación - UNAM
+
 ---
 
 # Arquitectura del proyecto
@@ -91,7 +96,4 @@ biciops/
 ├── docker-compose.yml
 └── README.md
 
-## Autor
 
-Diego Serrano  
-Ingeniería en Computación - UNAM
