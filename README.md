@@ -79,21 +79,26 @@ Ingeniería en Computación - UNAM
 
 # Arquitectura del proyecto
 
-```txt
-biciops/
+
+backend/
+├── src/
+│   └── config/
+│       └── db.js
+├── server.js
+
+frontend/
+├── css/
+├── js/
+│   ├── api.js
+│   ├── app.js
+│   ├── dashboard.js
+│   ├── inspecciones.js
+│   ├── mantenimiento.js
+│   ├── modales.js
+│   ├── operadores.js
+│   └── vehiculos.js
 │
-├── backend/
-│   ├── routes/
-│   ├── controllers/
-│   ├── database/
-│   └── server.js
-│
-├── frontend/
-│   ├── css/
-│   ├── js/
-│   └── index.html
-│
-├── docker-compose.yml
+└── index.html
+└── .gitignore
+└── docker-compose.yml
 └── README.md
-
-
