@@ -112,6 +112,7 @@ async function obtenerInspecciones() {
         );
 
         const inspecciones = await respuesta.json();
+        actualizarCardsInspecciones(inspecciones);
 
         const contenedor = document.getElementById(
             'contenedorInspecciones'
@@ -172,6 +173,25 @@ async function obtenerInspecciones() {
 }
 
 obtenerInspecciones();
+
+
+function actualizarCardsInspecciones(inspecciones) {
+
+    const total = inspecciones.length;
+
+    const aprobadas = inspecciones.filter(
+        inspeccion => inspeccion.resultado.toLowerCase() === 'aprobado'
+    ).length;
+
+    const mantenimiento = inspecciones.filter(
+        inspeccion => inspeccion.resultado.toLowerCase() === 'requiere mantenimiento'
+    ).length;
+
+    document.getElementById('totalInspecciones').textContent = total;
+    document.getElementById('inspeccionesAprobadas').textContent = aprobadas;
+    document.getElementById('inspeccionesMantenimiento').textContent = mantenimiento;
+
+}
 
 
 

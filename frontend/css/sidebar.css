@@ -17,6 +17,9 @@
     color: white;
     font-size: 26px;
     margin-bottom: 55px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
 }
 
 .sidebar button {
@@ -27,7 +30,7 @@
 
     border: none;
     padding: 14px 18px;
-    border-radius: 8px;
+    border-radius: 12px;
 
     display: flex;
     align-items: center;
@@ -41,13 +44,14 @@
 
     margin-bottom: 12px;
     text-align: left;
+    backdrop-filter: blur(10px);
 }
 
 .sidebar button:hover {
-    background: #0f2747;
+    background: rgba(255,255,255,0.08);
     color: white;
+    transform: translateX(4px);
 }
-
 .sidebar button i {
     width: 18px;
     font-size: 16px;
@@ -55,9 +59,17 @@
 }
 
 .activo-menu {
-    background-color: #f59e0b !important;
+    background: linear-gradient(
+        135deg,
+        #f59e0b,
+        #fbbf24
+    ) !important;
+
     color: #111827 !important;
+
     font-weight: 800;
+
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.35);
 }
 
 .sidebar-bottom {
@@ -68,4 +80,54 @@
 
 .sidebar-bottom button {
     color: #94a3b8;
+}
+
+.sidebar button i {
+    transition: 0.2s ease;
+}
+
+.sidebar button:hover i {
+    transform: scale(1.1);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 52px;
+}
+
+.brand-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 8px;
+    background: #f59e0b;
+    color: #02152b;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+}
+
+.brand h2 {
+    color: white;
+    font-size: 24px;
+    margin: 0;
+    line-height: 1.05;
+    letter-spacing: 1px;
+}
+
+.brand span {
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid rgba(148, 163, 184, 0.18);
 }

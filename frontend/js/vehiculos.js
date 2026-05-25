@@ -1,3 +1,11 @@
+let vehiculosGlobal = [];
+
+let vehiculosFiltradosGlobal = [];
+
+let paginaActual = 1;
+
+const vehiculosPorPagina = 5;
+
 async function obtenerVehiculos() {
 
     try {
@@ -8,52 +16,15 @@ async function obtenerVehiculos() {
 
         const vehiculos = await respuesta.json();
 
+        vehiculosGlobal = vehiculos;
+
         console.log(vehiculos);
 
         actualizarDashboard(vehiculos);
 
-        const contenedor = document.getElementById(
-            'contenedorVehiculos'
-        );
+        renderizarVehiculos(vehiculos);
 
-        contenedor.innerHTML = '';
-
-        vehiculos.forEach((vehiculo) => {
-
-            contenedor.innerHTML += `
-                <tr>
-                    
-                    <td>${vehiculo.unidad}</td>
-                    <td>${vehiculo.operador}</td>
-                    <td>${vehiculo.tipo}</td>
-                    <td>
-                        <span class="estado ${vehiculo.estado.toLowerCase().replaceAll(' ', '-')}">
-                            ${vehiculo.estado}
-                        </span>
-                    </td>
-                    <td>
-                                                <button 
-                    class="btn-editar" 
-                    onclick="editarVehiculo(${vehiculo.id})"
-                    title="Editar vehículo">
-
-                    <i class="fa-solid fa-pen"></i>
-
-                    </button>
-
-                    <button 
-                    class="btn-eliminar" 
-                    onclick="eliminarVehiculo(${vehiculo.id})"
-                    title="Eliminar vehículo">
-
-                    <i class="fa-solid fa-trash"></i>
-
-                    </button>
-                    </td>
-                </tr>
-            `;
-
-        });
+        actualizarInfoPaginacion(vehiculos);
 
     } catch (error) {
 
@@ -66,9 +37,72 @@ async function obtenerVehiculos() {
 
 }
 
+function renderizarVehiculos(vehiculos) {
 
+    vehiculosFiltradosGlobal = vehiculos;
+
+    const inicio = (paginaActual - 1) * vehiculosPorPagina;
+    const fin = inicio + vehiculosPorPagina;
+
+    const vehiculosPagina = vehiculos.slice(inicio, fin);
+
+    const contenedor = document.getElementById(
+        'contenedorVehiculos'
+    );
+
+    contenedor.innerHTML = '';
+
+    vehiculosPagina.forEach((vehiculo) => {
+
+        contenedor.innerHTML += `
+            <tr>
+                <td>${vehiculo.unidad}</td>
+                <td>${vehiculo.operador}</td>
+                <td>${vehiculo.tipo}</td>
+                <td>
+                    <span class="estado ${vehiculo.estado.toLowerCase().replaceAll(' ', '-')}">
+                        ${vehiculo.estado}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn-editar" onclick="editarVehiculo(${vehiculo.id})">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+
+                    <button class="btn-eliminar" onclick="eliminarVehiculo(${vehiculo.id})">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+
+    });
+
+    actualizarInfoPaginacion(vehiculos);
+
+}
 
 obtenerVehiculos();
+
+function cambiarPaginaVehiculos(direccion) {
+
+    const totalPaginas = Math.ceil(
+        vehiculosFiltradosGlobal.length / vehiculosPorPagina
+    );
+
+    paginaActual += direccion;
+
+    if (paginaActual < 1) {
+        paginaActual = 1;
+    }
+
+    if (paginaActual > totalPaginas) {
+        paginaActual = totalPaginas;
+    }
+
+    renderizarVehiculos(vehiculosFiltradosGlobal);
+
+}
 
 async function eliminarVehiculo(id) {
 
@@ -108,6 +142,7 @@ async function editarVehiculo(id) {
     );
 
     const vehiculos = await respuesta.json();
+ 
 
     const vehiculo = vehiculos.find(
 
@@ -162,14 +197,299 @@ function actualizarDashboard(vehiculos) {
         vehiculo => vehiculo.estado.toLowerCase() === 'en mantenimiento'
     ).length;
 
-    const descompuestos = vehiculos.filter(
-        vehiculo => vehiculo.estado.toLowerCase() === 'descompuesto'
-    ).length;
 
     document.getElementById('totalVehiculos').textContent = total;
     document.getElementById('vehiculosActivos').textContent = activos;
     document.getElementById('vehiculosMantenimiento').textContent = mantenimiento;
-    document.getElementById('vehiculosDescompuestos').textContent = descompuestos;
+    obtenerTotalOperadores();
+    cargarUltimasInspeccionesDashboard();
+    cargarUltimosMantenimientosDashboard();
+    cargarAlertasCriticas(vehiculos);
+    actualizarSaludFlota(vehiculos);
+
+}
+
+async function obtenerTotalOperadores() {
+
+    try {
+
+        const respuesta = await fetch(
+            'http://localhost:3000/api/operadores'
+        );
+
+        const operadores = await respuesta.json();
+
+        document.getElementById(
+            'totalOperadores'
+        ).textContent = operadores.length;
+
+    } catch (error) {
+
+        console.error(
+            'Error al obtener operadores:',
+            error
+        );
+
+    }
+
+}
+
+
+async function cargarUltimasInspeccionesDashboard() {
+
+    try {
+
+        const respuesta = await fetch(
+            'http://localhost:3000/api/inspecciones'
+        );
+
+        const inspecciones = await respuesta.json();
+
+        const contenedor = document.getElementById(
+            'ultimasInspecciones'
+        );
+
+        contenedor.innerHTML = '';
+
+        inspecciones.slice(0, 4).forEach((inspeccion) => {
+
+            contenedor.innerHTML += `
+                <div class="item-dashboard">
+                    <div>
+                        <strong>${inspeccion.unidad}</strong>
+                        <span>${inspeccion.observaciones || 'Sin observaciones'}</span>
+                    </div>
+
+                    <span class="resultado ${inspeccion.resultado.toLowerCase().replaceAll(' ', '-')}">
+                        ${inspeccion.resultado}
+                    </span>
+                </div>
+            `;
+
+        });
+
+    } catch (error) {
+
+        console.error('Error al cargar inspecciones dashboard:', error);
+
+    }
+
+}
+
+async function cargarUltimosMantenimientosDashboard() {
+
+    try {
+
+        const respuesta = await fetch(
+            'http://localhost:3000/api/mantenimientos'
+        );
+
+        const mantenimientos = await respuesta.json();
+
+        const contenedor = document.getElementById(
+            'ultimosMantenimientos'
+        );
+
+        contenedor.innerHTML = '';
+
+        mantenimientos.slice(0, 4).forEach((mantenimiento) => {
+
+            contenedor.innerHTML += `
+                <div class="item-dashboard">
+                    <div>
+                        <strong>${mantenimiento.unidad}</strong>
+                        <span>${mantenimiento.servicio}</span>
+                    </div>
+
+                    <span class="resultado ${mantenimiento.estado.toLowerCase().replaceAll(' ', '-')}">
+                        ${mantenimiento.estado}
+                    </span>
+                </div>
+            `;
+
+        });
+
+    } catch (error) {
+
+        console.error('Error al cargar mantenimientos dashboard:', error);
+
+    }
+
+}
+
+function cargarAlertasCriticas(vehiculos) {
+
+    const contenedor = document.getElementById(
+        'alertasCriticas'
+    );
+
+    contenedor.innerHTML = '';
+
+    const alertas = vehiculos.filter(
+
+        vehiculo =>
+
+            vehiculo.estado.toLowerCase() === 'en mantenimiento'
+
+    );
+
+    if (alertas.length === 0) {
+
+        contenedor.innerHTML = `
+            <div class="alerta-item">
+
+                <strong>
+                    ✅ Sin alertas críticas
+                </strong>
+
+                <span>
+                    Todo operativo
+                </span>
+
+            </div>
+        `;
+
+        return;
+
+    }
+
+    alertas.forEach((vehiculo) => {
+
+        contenedor.innerHTML += `
+            <div class="alerta-item">
+
+                <strong>
+                    ${vehiculo.unidad}
+                </strong>
+
+                <span>
+                    Requiere atención
+                </span>
+
+            </div>
+        `;
+
+    });
+
+}
+
+function actualizarSaludFlota(vehiculos) {
+
+    const total = vehiculos.length;
+
+    const activos = vehiculos.filter(
+        vehiculo => vehiculo.estado.toLowerCase() === 'activo'
+    ).length;
+
+    const porcentaje = total === 0
+        ? 0
+        : Math.round((activos / total) * 100);
+
+    const porcentajeDashboard = document.getElementById('porcentajeFlota');
+
+    if (porcentajeDashboard) {
+        porcentajeDashboard.textContent = `${porcentaje}%`;
+    }
+
+    const barraDashboard = document.getElementById('barraFlotaFill');
+
+    if (barraDashboard) {
+        barraDashboard.style.width = `${porcentaje}%`;
+    }
+
+    const saludVehiculos = document.getElementById('saludVehiculos');
+
+    if (saludVehiculos) {
+        saludVehiculos.textContent = `${porcentaje}%`;
+    }
+
+}
+
+
+function filtrarVehiculos(texto) {
+
+    const textoBusqueda = texto.toLowerCase();
+
+    const vehiculosFiltrados = vehiculosGlobal.filter((vehiculo) => {
+
+        const unidad = vehiculo.unidad?.toLowerCase() || '';
+
+        const operador = vehiculo.operador?.toLowerCase() || '';
+
+        const estado = vehiculo.estado?.toLowerCase() || '';
+
+        return (
+
+            unidad.includes(textoBusqueda)
+
+            ||
+
+            operador.includes(textoBusqueda)
+
+            ||
+
+            estado.includes(textoBusqueda)
+
+        );
+
+    });
+
+    paginaActual = 1;
+
+    renderizarVehiculos(vehiculosFiltrados);
+
+}
+
+let estadoFiltroActual = 'todos';
+
+function filtrarPorEstado(estado) {
+
+    estadoFiltroActual = estado;
+
+    let vehiculosFiltrados = vehiculosGlobal;
+
+    if (estado !== 'todos') {
+
+        vehiculosFiltrados = vehiculosGlobal.filter(
+
+            vehiculo =>
+
+                vehiculo.estado.toLowerCase() === estado
+
+        );
+
+    }
+    paginaActual = 1;
+
+    renderizarVehiculos(vehiculosFiltrados);
+
+    actualizarInfoPaginacion(vehiculosFiltrados);
+
+}
+
+function actualizarInfoPaginacion(vehiculos) {
+
+    const info = document.getElementById('infoPaginacion');
+    const pagina = document.getElementById('paginaActualVehiculos');
+
+    if (!info || !pagina) {
+        return;
+    }
+
+    const total = vehiculos.length;
+
+    const inicio = total === 0
+        ? 0
+        : (paginaActual - 1) * vehiculosPorPagina + 1;
+
+    const fin = Math.min(
+        paginaActual * vehiculosPorPagina,
+        total
+    );
+
+    info.textContent = `Mostrando ${inicio} a ${fin} de ${total} vehículos`;
+
+    pagina.textContent = paginaActual;
 
 }
 
@@ -194,12 +514,6 @@ btnCancelarEstado.addEventListener('click', () => {
 });
 
 
-
-
-
-
-
-
 btnCancelarAgregar.addEventListener('click', () => {
 
     const modal = document.getElementById('modalAgregar');
@@ -207,8 +521,6 @@ btnCancelarAgregar.addEventListener('click', () => {
     modal.classList.add('oculto');
 
 });
-
-
 
 
 btnGuardarAgregar.addEventListener('click', async () => {
@@ -271,10 +583,6 @@ btnGuardarAgregar.addEventListener('click', async () => {
 
 });
 
-
-
-
-
 btnGuardarEstado.addEventListener('click', async () => {
 
     const modal = document.getElementById('modalEstado');
@@ -328,8 +636,6 @@ btnGuardarEstado.addEventListener('click', async () => {
 
 });
 
-
-
 async function cargarOperadoresEditar() {
 
     const respuesta = await fetch(
@@ -355,4 +661,25 @@ async function cargarOperadoresEditar() {
     });
 
 }
+
+const inputBusqueda = document.getElementById('inputBusqueda');
+
+if (inputBusqueda) {
+
+    inputBusqueda.addEventListener('input', (evento) => {
+
+        const texto = evento.target.value;
+
+        if (texto.trim() !== '') {
+
+            mostrarSeccion('vehiculos');
+
+        }
+
+        filtrarVehiculos(texto);
+
+    });
+
+}
+
 

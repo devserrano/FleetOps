@@ -33,54 +33,93 @@
 
  <div class="layout">
 
-    <aside class="sidebar">
+            <aside class="sidebar">
 
-        <h2>UrbanRide Control</h2>
+            <div class="sidebar-top">
+
+                <div class="brand">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-bicycle"></i>
+                    </div>
+
+                    <div>
+                        <h2>UrbanRide</h2>
+                        <span>Control Terminal A-12</span>
+                    </div>
+                </div>
 
                 <button data-seccion="dashboard" onclick="mostrarSeccion('dashboard')">
-    <i class="fa-solid fa-chart-line"></i>
-    Dashboard
-</button>
-
-            <button data-seccion="vehiculos" onclick="mostrarSeccion('vehiculos')">
-                <i class="fa-solid fa-bicycle"></i>
-                Vehículos
-            </button>
-
-            <button data-seccion="inspecciones" onclick="mostrarSeccion('inspecciones')">
-                <i class="fa-solid fa-clipboard-check"></i>
-                Inspecciones
-            </button>
-
-            <button data-seccion="mantenimiento" onclick="mostrarSeccion('mantenimiento')">
-                <i class="fa-solid fa-screwdriver-wrench"></i>
-                Mantenimiento
-            </button>
-            <button data-seccion="operadores" onclick="mostrarSeccion('operadores')">
-                <i class="fa-solid fa-users"></i>
-                 Operadores
+                    <i class="fa-solid fa-chart-line"></i>
+                    Dashboard
                 </button>
 
-    </aside>
+                <button data-seccion="vehiculos" onclick="mostrarSeccion('vehiculos')">
+                    <i class="fa-solid fa-bicycle"></i>
+                    Vehículos
+                </button>
+
+                <button data-seccion="inspecciones" onclick="mostrarSeccion('inspecciones')">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    Inspecciones
+                </button>
+
+                <button data-seccion="mantenimiento" onclick="mostrarSeccion('mantenimiento')">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    Mantenimiento
+                </button>
+
+                <button data-seccion="operadores" onclick="mostrarSeccion('operadores')">
+                    <i class="fa-solid fa-users"></i>
+                    Operadores
+                </button>
+
+            </div>
+
+            <div class="sidebar-bottom">
+
+                <button>
+                    <i class="fa-regular fa-circle-question"></i>
+                    Support
+                </button>
+
+                <button>
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Sign Out
+                </button>
+
+            </div>
+
+        </aside>
 
     <main class="contenido">
-        
-
+                
         <header class="topbar">
 
-    <div>
-        <h2>Bicitaxi Command</h2>
-        <p>Gestión operativa de unidades</p>
-    </div>
+            <div class="topbar-left">
 
-    <div class="topbar-actions">
-        <span class="empresa">Cooperativa Bicitaxi</span>
+                <h2>UrbanRide Command</h2>
 
-        <button class="btn-logout">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Logout
-        </button>
-    </div>
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                        <input 
+                            type="text"
+                            id="inputBusqueda"
+                            placeholder="Buscar vehículo, operador o reporte..."
+                        >
+                </div>
+
+            </div>
+
+            <div class="topbar-actions">
+
+                <i class="fa-regular fa-bell"></i>
+                <i class="fa-solid fa-gear"></i>
+
+                <button class="btn-dispatch">
+                    Dispatch
+                </button>
+
+            </div>
 
         </header>
 
@@ -88,70 +127,211 @@
 
             <h1>Dashboard</h1>
 
-            <div class="cards">
+            <div class="dashboard-grid">
 
-                <div class="card">
-                    <h3>Total Vehículos</h3>
-                    <p id="totalVehiculos">0</p>
+                <div class="dashboard-card">
+                    <div>
+                        <h3>Total Vehículos</h3>
+                        <p id="totalVehiculos">0</p>
+                        <span>Unidades registradas</span>
+                    </div>
+                    <i class="fa-solid fa-bicycle"></i>
                 </div>
 
-                <div class="card">
-                    <h3>Activos</h3>
-                    <p id="vehiculosActivos">0</p>
+                <div class="dashboard-card">
+                    <div>
+                        <h3>Activos</h3>
+                        <p id="vehiculosActivos">0</p>
+                        <span>Listos para operar</span>
+                    </div>
+                    <i class="fa-solid fa-circle-check"></i>
                 </div>
 
-                <div class="card">
-                    <h3>Mantenimiento</h3>
-                    <p id="vehiculosMantenimiento">0</p>
+                <div class="dashboard-card">
+                    <div>
+                        <h3>Mantenimiento</h3>
+                        <p id="vehiculosMantenimiento">0</p>
+                        <span>Requieren revisión</span>
+                    </div>
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
                 </div>
-                <div class="card">
-                 <h3>Descompuestos</h3>
-                 <p id="vehiculosDescompuestos">0</p>
+
+                <div class="dashboard-card">
+
+                    <div>
+                         <h3>Operadores</h3>
+                         <p id="totalOperadores">0</p>
+                        <span>Personal registrado</span>
+                     </div>
+                         <i class="fa-solid fa-users"></i>
 
                 </div>
 
             </div>
 
+            <div class="dashboard-panels">
+
+                 <div class="dashboard-panel">
+
+                    <div class="panel-header">
+                        <h2>Últimas inspecciones</h2>
+                        <span>Actividad reciente</span>
+                    </div>
+
+                    <div id="ultimasInspecciones" class="lista-dashboard">
+                    </div>
+
+                            </div>
+
+                            <div class="dashboard-panel">
+
+                                <div class="panel-header">
+                                    <h2>Mantenimientos recientes</h2>
+                                    <span>Servicios registrados</span>
+                                </div>
+
+                                <div id="ultimosMantenimientos" class="lista-dashboard">
+                                </div>
+
+                            </div>
+
+            </div>
+
+                 <div class="dashboard-bottom">
+
+                    <div class="dashboard-panel">
+
+                        <div class="panel-header">
+                            <h2>Alertas críticas</h2>
+                            <span>Vehículos que requieren atención</span>
+                        </div>
+
+                        <div id="alertasCriticas" class="lista-dashboard">
+                        </div>
+
+                    </div>
+
+                    <div class="dashboard-panel">
+
+                        <div class="panel-header">
+                            <h2>Salud de flota</h2>
+                            <span>Estado general operativo</span>
+                        </div>
+
+                        <div class="fleet-health">
+
+                            <div class="fleet-top">
+
+                                <h1 id="porcentajeFlota">0%</h1>
+
+                                <span>Operativa</span>
+
+                            </div>
+
+                            <div class="barra-flota">
+
+                                <div id="barraFlotaFill" class="barra-flota-fill">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
         </section>
 
-        <section id="vehiculos" class="seccion">
+        <section id="vehiculos" class="seccion oculto">
+            <div class="vehiculos-header">
 
-            <div class="encabezado">
-
-                <h1>Inventario de Vehículos</h1>
+                <div>
+                    <h1>Inventario de Vehículos</h1>
+                    <p>Administra y monitorea el estado operativo de la flota</p>
+                </div>
 
                 <button id="btnAgregar">
-                    + Agregar Vehículo
+                    <i class="fa-solid fa-plus"></i>
+                    Agregar Vehículo
                 </button>
 
             </div>
 
-            <table>
+            <div class="vehiculos-tools">
+
+                <div class="filter-box">
+
+                    <h3>Filtrar por estado</h3>
+
+                    <div class="filter-buttons">
+                        <button class="filtro-activo" onclick="filtrarPorEstado('todos')">Todos</button>
+                        <button onclick="filtrarPorEstado('activo')">Activos</button>
+                        <button onclick="filtrarPorEstado('en mantenimiento')">Mantenimiento</button>
+                    </div>
+
+                </div>
+
+                <div class="filter-box">
+
+                    <h3>Categoría</h3>
+
+                    <select>
+                        <option>Bicitaxi</option>
+                    </select>
+
+                </div>
+
+                <div class="fleet-card-dark">
+
+                    <span>Salud de flota</span>
+                    <h2 id="saludVehiculos">0%</h2>
+                    <p>Disponibilidad operativa</p>
+
+                </div>
+
+            </div>
+
+            <table class="tabla-compacta">
 
                 <thead>
-
                     <tr>
-                        
-                        <tr>
-                            <th>Unidad</th>
-                            <th>Operador</th>
-                            <th>Tipo</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
+                        <th>Unidad</th>
+                        <th>Operador</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
                     </tr>
-
                 </thead>
 
                 <tbody id="contenedorVehiculos">
-
                 </tbody>
 
             </table>
 
-        </section>
+            <div class="paginacion-vehiculos">
 
-                        <section id="operadores" class="seccion oculto">
+                <span id="infoPaginacion">
+                    Mostrando 0 de 0 vehículos
+                </span>
+
+                <div>
+                    <button onclick="cambiarPaginaVehiculos(-1)">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+
+                    <span id="paginaActualVehiculos">1</span>
+
+                    <button onclick="cambiarPaginaVehiculos(1)">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+
+            </div>
+
+             </section>
+
+            <section id="operadores" class="seccion oculto">
 
                 <div class="encabezado">
 
@@ -166,32 +346,52 @@
                 </div>
 
             </section>
-
-
             <section id="inspecciones" class="seccion oculto">
 
-                <div class="encabezado">
+                <div class="inspecciones-header">
 
-                    <h1>Inspecciones</h1>
+                    <div>
+                        <h1>Inspecciones</h1>
+                        <p>Control técnico y revisión operativa de unidades</p>
+                    </div>
 
-                    <button id="btnAgregarInspeccion">
-                        + Nueva Inspección
+                    <button id="btnAgregarInspeccion" class="btn-nueva-inspeccion">
+                        <i class="fa-solid fa-plus"></i>
+                        Nueva Inspección
                     </button>
 
                 </div>
 
-                <table>
+                <div class="inspecciones-tools">
+
+                    <div class="inspeccion-card">
+                        <h3>Total inspecciones</h3>
+                        <p id="totalInspecciones">0</p>
+                        <span>Registros realizados</span>
+                    </div>
+
+                    <div class="inspeccion-card">
+                        <h3>Aprobadas</h3>
+                        <p id="inspeccionesAprobadas">0</p>
+                        <span>Unidades listas</span>
+                    </div>
+
+                    <div class="inspeccion-card">
+                        <h3>Requieren mantenimiento</h3>
+                        <p id="inspeccionesMantenimiento">0</p>
+                        <span>Necesitan atención</span>
+                    </div>
+
+                </div>
+
+                <table class="tabla-compacta">
 
                     <thead>
                         <tr>
-                           <th>Unidad</th>
-
+                            <th>Unidad</th>
                             <th>Fecha y hora</th>
-
                             <th>Resultado</th>
-
                             <th>Observaciones</th>
-
                             <th>Acciones</th>
                         </tr>
                     </thead>
